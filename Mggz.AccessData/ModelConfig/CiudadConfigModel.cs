@@ -1,11 +1,12 @@
 ﻿using Mggz.Shared.Entidades.Oficiales;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Mggz.AccessData.ModelConfig;
 
 public class CiudadConfigModel : IEntityTypeConfiguration<Ciudad>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Ciudad> builder)
+    public void Configure(EntityTypeBuilder<Ciudad> builder)
     {
         builder.ToTable("Ciudades", "Oficiales");
         builder.HasKey(e => e.CiudadId);

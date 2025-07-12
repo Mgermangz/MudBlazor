@@ -1,8 +1,14 @@
 using Mggz.AccessData.ContextDB;
+using Mggz.Shared.Entidades.Admin;
 using Mggz.Shared.Utilidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +49,38 @@ builder.Services.AddSwaggerGen(c =>
           }
         });
 });
-
+// Sistema de Autenticación y Autorización con el Usuario personalizado
+builder.Services.AddIdentity<Usuario, IdentityRole>(cfg =>
+                {   // Validar Confirmación de Correo Electrónico
+                    cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                    cfg.User.RequireUniqueEmail = true;
+                    // Configuración de Contraseña
+                    cfg.Password.RequiredLength = 6;
+                    cfg.Password.RequireDigit = false;
+                    cfg.Password.RequireLowercase = false;
+                    cfg.Password.RequireUppercase = false;
+                    cfg.Password.RequireNonAlphanumeric = false;
+                    // Configuración de Bloqueo de Cuenta
+                    cfg.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    cfg.Lockout.MaxFailedAccessAttempts = 5;
+                    cfg.Lockout.AllowedForNewUsers = true;
+                })
+                .AddEntityFrameworkStores<DelabDbContext>()
+                .AddDefaultTokenProviders();
+// Configuración de la Autenticación JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddCookie()
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwtKey"]!)),
+                        ClockSkew = TimeSpan.Zero, // Reduce el tiempo de espera para la expiración del token
+                    };
+                });
 // Librerias Terceros
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<AutoMapperProfile>());
 

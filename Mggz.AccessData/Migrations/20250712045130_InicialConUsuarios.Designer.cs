@@ -4,6 +4,7 @@ using Mggz.AccessData.ContextDB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mggz.AccessData.Migrations
 {
     [DbContext(typeof(DelabDbContext))]
-    partial class DelabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250712045130_InicialConUsuarios")]
+    partial class InicialConUsuarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

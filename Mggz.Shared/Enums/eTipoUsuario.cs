@@ -10,8 +10,10 @@ namespace Mggz.Shared.Enums
     {
         Sistemas = 1,
         Administrador,
+        OficialCumplimiento,
+        Supervisor,
         Operador,
-        Consulta,
+        Consultor,
         Auditor
     }
 }
